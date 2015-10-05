@@ -27,7 +27,7 @@ public class RightPaddle {
 		Random rand = new Random();
 		if(!debug){
 			ticks++;
-			if(ticks >= 30){
+			if(ticks >= 25){
 				if(ball.getY() < center){
 					if(canMoveUp()) y--;
 				}
