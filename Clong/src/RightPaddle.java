@@ -9,7 +9,7 @@ public class RightPaddle {
 	private int ticks;
 	private final int randomFactor = 1;
 	private Board board;
-	private boolean debug = true;
+	private boolean debug = false;
 	private KeyManager km;
 	
 	public RightPaddle(int width, int height, Board board, KeyManager km){
@@ -27,7 +27,7 @@ public class RightPaddle {
 		Random rand = new Random();
 		if(!debug){
 			ticks++;
-			if(ticks >= 30){
+			if(ticks >= 32){
 				if(ball.getY() < center){
 					if(canMoveUp()) y--;
 				}
@@ -49,8 +49,6 @@ public class RightPaddle {
 				ticks = 0;
 			}
 		}
-		
-		//upOrDown = 0;
 	}
 	
 	private boolean canMoveDown() {
@@ -69,9 +67,9 @@ public class RightPaddle {
 	public void render(Graphics g){
 		g.drawRect(x, y, 20, 100);
 		g.setColor(Color.RED);
-		if(board.ball != null){
-			//System.out.println("Not Null");
-			//g.drawLine(board.ball.getX(), board.ball.getY(), x, center);
+		if(board.ball != null && debug){
+			System.out.println("Not Null");
+			g.drawLine(board.ball.getX(), board.ball.getY(), x, center);
 		}
 	}
 

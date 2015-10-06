@@ -50,11 +50,23 @@ public class Ball {
 		if(rand.nextBoolean())y = screenHeight/2 + rand.nextInt(20);
 		else y = screenHeight/2 - rand.nextInt(20);
 		
-		if(rand.nextBoolean()) xDir = 1;
-		else xDir = -1;
+		if(rand.nextBoolean()){
+			xDir = 1;
+			left = false;
+		}
+		else {
+			xDir = -1;
+			left = true;
+		}
 		
-		if(rand.nextBoolean()) yDir = 1;
-		else yDir = -1;
+		if(rand.nextBoolean()){
+			yDir = 1;
+			up = false;
+		}
+		else {
+			yDir = -1;
+			up = true;
+		}
 	}
 
 	public void tick(){
@@ -78,7 +90,7 @@ public class Ball {
 	
 	private void resetFuture() {
 		
-		if(x > screenWidth/2 -10 && !left){
+		if(x > screenWidth/2 -5 && !left){
 			futureX = x;
 			futureY = y;
 		}
@@ -132,8 +144,8 @@ public class Ball {
 		futureBall.speed = 1;
 		first = 0;
 		while(futureBall.x <= rightPad.getX()){
-			futureX = futureBall.x + rand.nextInt(10);
-			futureY = futureBall.y;
+			futureX = futureBall.x;
+			futureY = futureBall.y + rand.nextInt(50) - rand.nextInt(50);
 			futureBall.tick();
 		}
 	}

@@ -52,6 +52,8 @@ public class MainMenu extends State{
 		g.fillRect(0, 0, width*scale, height*scale);
 		
 		g.setColor(Color.RED);
+		g.drawString("Press Enter", width*scale - 140, height*scale - 30);
+		g.drawString("UP/DOWN keys to move", width*scale - 140, height*scale - 15);
 		//Font currentFont = g.getFont();
 		Font newFont = new Font("TimesRoman", Font.BOLD, 50);
 		g.setFont(newFont);
