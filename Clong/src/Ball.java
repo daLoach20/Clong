@@ -43,28 +43,18 @@ public class Ball {
 	}
 	
 	private void getStartPositions() {
-		if(plus())x = screenWidth/2 + rand.nextInt(20);
+		
+		if(rand.nextBoolean())x = screenWidth/2 + rand.nextInt(20);
 		else x = screenWidth/2 - rand.nextInt(20);
 		
-		
-		if(plus())y = screenHeight/2 + rand.nextInt(20);
+		if(rand.nextBoolean())y = screenHeight/2 + rand.nextInt(20);
 		else y = screenHeight/2 - rand.nextInt(20);
 		
-		if(plus()) xDir = 1;
+		if(rand.nextBoolean()) xDir = 1;
 		else xDir = -1;
 		
-		if(plus()) yDir = 1;
-		else yDir = -1;		
-	}
-	
-	private boolean plus(){
-		int random = rand.nextInt(1);
-		if(random == 0){
-			return true;
-		}
-		else{
-			return false;
-		}
+		if(rand.nextBoolean()) yDir = 1;
+		else yDir = -1;
 	}
 
 	public void tick(){
