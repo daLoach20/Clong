@@ -88,7 +88,7 @@ public class Ball {
 	
 	private void resetFuture() {
 		
-		if(x > screenWidth/2 -40 && !left){
+		if(x > screenWidth/2 -10 && !left){
 			futureX = x;
 			futureY = y;
 		}
@@ -111,7 +111,6 @@ public class Ball {
 		if(collisionWall()) xDir = 0;
 		
 		if(realBall && collisionUp()) {
-			System.out.println("CollisionUp" + ++collisions + ", YDIR: " + yDir + ", Y: " + y);
 			yDir = 1;
 			up = false;
 		}
@@ -120,12 +119,10 @@ public class Ball {
 			yDir = -1;
 		}
 		if(y < 1) {
-			//System.out.println("too high: " + ++collisions);
 			yDir = 1;
 			up = false;
 		}
 		if(y+height+2 > screenHeight) {
-			//System.out.println("too low: " + ++collisions);
 			yDir = -1;
 			up = true;
 		}
@@ -145,7 +142,7 @@ public class Ball {
 		futureBall.speed = 1;
 		first = 0;
 		while(futureBall.x <= rightPad.getX()){
-			futureX = futureBall.x;
+			futureX = futureBall.x + rand.nextInt(10);
 			futureY = futureBall.y;
 			futureBall.tick();
 		}
@@ -156,8 +153,6 @@ public class Ball {
 		if(!collisionLeft() && !collisionRight()){
 			if(!up){
 				if(x < leftPad.getX()+20 && x+width > leftPad.getX()){
-					//System.out.println("lpx: " + leftPad.getX() + ", bx: " + x);
-					//System.out.println("lpy: " + (leftPad.getY()+100) + ", by: " + y);
 					if(y+height > leftPad.getY()-2 && y < leftPad.getY() - 5) return true;
 				}
 				//if rightpad
@@ -174,17 +169,13 @@ public class Ball {
 		if(!collisionLeft() && !collisionRight()){
 			if(up){
 				if(x < leftPad.getX()+20 && x+width > leftPad.getX()){
-					//System.out.println("lpx: " + leftPad.getX() + ", bx: " + x);
-					//System.out.println("lpy: " + (leftPad.getY()+100) + ", by: " + y);
 					if(y < leftPad.getY()+102 && y > leftPad.getY() + 90) {
-						System.out.println("Left Coll Up");
 						return true;
 					}
 				}
 				//if rightpad
 				if(x+width > rightPad.getX() && x < rightPad.getX()+20){
 					if(y < rightPad.getY()+102 && y > rightPad.getY() + 90) {
-						System.out.println("Right Coll Up");
 						return true;
 					}
 				}
@@ -198,7 +189,6 @@ public class Ball {
 		
 		if(!left){
 			if(x+width == rightPad.getX()){
-				//System.out.println("right x true");
 				if(y+height >= rightPad.getY() && y <= rightPad.getY()+100) return true;
 			}
 		}
@@ -210,7 +200,6 @@ public class Ball {
 		
 		if(left){
 			if(x == leftPad.getX()+20){
-				//System.out.println("right x true");
 				if(y+height >= leftPad.getY() && y <= leftPad.getY()+100) return true;
 			}
 		}
