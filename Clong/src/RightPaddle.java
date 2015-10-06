@@ -9,7 +9,7 @@ public class RightPaddle {
 	private int ticks;
 	private final int randomFactor = 1;
 	private Board board;
-	private boolean debug = false;
+	private boolean debug = true;
 	private KeyManager km;
 	
 	public RightPaddle(int width, int height, Board board, KeyManager km){
@@ -27,7 +27,7 @@ public class RightPaddle {
 		Random rand = new Random();
 		if(!debug){
 			ticks++;
-			if(ticks >= 25){
+			if(ticks >= 30){
 				if(ball.getY() < center){
 					if(canMoveUp()) y--;
 				}

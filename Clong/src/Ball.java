@@ -1,12 +1,15 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Random;
 public class Ball {
 	
-	private int x, y, screenWidth, screenHeight;
+	public int x, y, screenWidth, screenHeight, futureY, futureX;
 	private final int scale = 4, width = 2*scale, height = 2*scale;
-	private int xDir, yDir, speed = 20;
+	public int xDir, yDir, speed, defaultSpeed;
 	private int ticks;
+	private boolean realBall;
+	private Random rand = new Random();
 	private LeftPaddle leftPad;
 	private RightPaddle rightPad;
 	private ArrayList<State> states;
@@ -16,31 +19,60 @@ public class Ball {
 	private Sound win;
 	private Sound lose;
 	
-	public Ball(int width, int height, LeftPaddle leftPad, RightPaddle rightPad, ArrayList<State> states, KeyManager km){
+	//test code
+	public int collisions = 0;
+	private int first = 0;
+	
+	public Ball(int width, int height, LeftPaddle leftPad, RightPaddle rightPad, ArrayList<State> states, KeyManager km, boolean realBall){
 		//sets original position of ball, and original direction (this should be randomized)
 		this.states = states;
 		this.screenWidth = width;
 		this.screenHeight = height;
-		this.x = width/2;
-		this.y = height/2;
-		this.xDir = -1;
-		this.left = true;
-		this.yDir = 1;
-		this.up = false;
+		getStartPositions();
+		this.futureX = x;
+		this.futureY = y;
 		this.leftPad = leftPad;
 		this.rightPad = rightPad;
 		this.km = km;
+		this.realBall = realBall;
+		this.defaultSpeed = 20;
 		ticks = 0;
 		hit = new Sound("Collision", Sound.getUrl("coll"));
 		win = new Sound("Collision", Sound.getUrl("win"));
 		lose = new Sound("Collision", Sound.getUrl("lose"));
 	}
 	
+	private void getStartPositions() {
+		if(plus())x = screenWidth/2 + rand.nextInt(20);
+		else x = screenWidth/2 - rand.nextInt(20);
+		
+		
+		if(plus())y = screenHeight/2 + rand.nextInt(20);
+		else y = screenHeight/2 - rand.nextInt(20);
+		
+		if(plus()) xDir = 1;
+		else xDir = -1;
+		
+		if(plus()) yDir = 1;
+		else yDir = -1;		
+	}
+	
+	private boolean plus(){
+		int random = rand.nextInt(1);
+		if(random == 0){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
 	public void tick(){
 		//figures out position and direction of ball
-		speed = 20;
 		if(km.space) speed = 1000;
+		else speed = defaultSpeed;
 		checkCollisions();
+		resetFuture();
 		
 		//if(x <= 0) xDir = 1;
 		//if(x+width >= screenWidth) xDir = -1;
@@ -54,36 +86,69 @@ public class Ball {
 		ticks++;
 	}
 	
+	private void resetFuture() {
+		
+		if(x > screenWidth/2 -40 && !left){
+			futureX = x;
+			futureY = y;
+		}
+		
+	}
+
 	private void checkCollisions() {
 		
-		if(collisionLeft()) {
+		if(realBall && collisionLeft()) {
 			xDir = 1;
 			left = false;
 			hit.play();
+			getFuturePosition();
 		}
-		if(collisionRight()) {
+		if(realBall && collisionRight()) {
 			xDir = -1;
 			left = true;
 			hit.play();
 		}
 		if(collisionWall()) xDir = 0;
-		if(collisionUp()) {
-			//System.out.println("CollisionUp");
-			yDir = 1;
-		}
-		if(collisionDown()){
-			
-			yDir = -1;
-		}
-		if(y <= 0) {
+		
+		if(realBall && collisionUp()) {
+			System.out.println("CollisionUp" + ++collisions + ", YDIR: " + yDir + ", Y: " + y);
 			yDir = 1;
 			up = false;
 		}
-		if(y+height+2 >= screenHeight) {
+		if(realBall && collisionDown()){
+			up = true;
+			yDir = -1;
+		}
+		if(y < 1) {
+			//System.out.println("too high: " + ++collisions);
+			yDir = 1;
+			up = false;
+		}
+		if(y+height+2 > screenHeight) {
+			//System.out.println("too low: " + ++collisions);
 			yDir = -1;
 			up = true;
 		}
 		
+	}
+
+	private void getFuturePosition() {
+		Ball futureBall = new Ball(screenWidth, screenHeight, leftPad, rightPad, states, km, false);
+		futureBall.x = x + 5;
+		futureBall.y = y;
+		futureBall.left = left;
+		futureBall.up = up;
+		
+		futureBall.xDir = 1;
+		futureBall.yDir = yDir;
+		
+		futureBall.speed = 1;
+		first = 0;
+		while(futureBall.x <= rightPad.getX()){
+			futureX = futureBall.x;
+			futureY = futureBall.y;
+			futureBall.tick();
+		}
 	}
 
 	private boolean collisionDown() {
@@ -93,11 +158,35 @@ public class Ball {
 				if(x < leftPad.getX()+20 && x+width > leftPad.getX()){
 					//System.out.println("lpx: " + leftPad.getX() + ", bx: " + x);
 					//System.out.println("lpy: " + (leftPad.getY()+100) + ", by: " + y);
-					if(y+height >= leftPad.getY()-2) return true;
+					if(y+height > leftPad.getY()-2 && y < leftPad.getY() - 5) return true;
 				}
 				//if rightpad
 				if(x > rightPad.getX() && x < rightPad.getX()+20){
-					if(y+height == rightPad.getY()-2) return true;
+					if(y+height > rightPad.getY()-2 && y < rightPad.getY() - 5) return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	private boolean collisionUp(){
+		
+		if(!collisionLeft() && !collisionRight()){
+			if(up){
+				if(x < leftPad.getX()+20 && x+width > leftPad.getX()){
+					//System.out.println("lpx: " + leftPad.getX() + ", bx: " + x);
+					//System.out.println("lpy: " + (leftPad.getY()+100) + ", by: " + y);
+					if(y < leftPad.getY()+102 && y > leftPad.getY() + 90) {
+						System.out.println("Left Coll Up");
+						return true;
+					}
+				}
+				//if rightpad
+				if(x+width > rightPad.getX() && x < rightPad.getX()+20){
+					if(y < rightPad.getY()+102 && y > rightPad.getY() + 90) {
+						System.out.println("Right Coll Up");
+						return true;
+					}
 				}
 			}
 		}
@@ -110,7 +199,7 @@ public class Ball {
 		if(!left){
 			if(x+width == rightPad.getX()){
 				//System.out.println("right x true");
-				if(y >= rightPad.getY() && y+height <= rightPad.getY()+100) return true;
+				if(y+height >= rightPad.getY() && y <= rightPad.getY()+100) return true;
 			}
 		}
 		
@@ -122,7 +211,7 @@ public class Ball {
 		if(left){
 			if(x == leftPad.getX()+20){
 				//System.out.println("right x true");
-				if(y >= leftPad.getY() && y+height <= leftPad.getY()+100) return true;
+				if(y+height >= leftPad.getY() && y <= leftPad.getY()+100) return true;
 			}
 		}
 		
@@ -130,33 +219,17 @@ public class Ball {
 		
 	}
 	
-	private boolean collisionUp(){
-		
-		if(!collisionLeft() && !collisionRight()){
-			if(up){
-				if(x < leftPad.getX()+20 && x+width > leftPad.getX()){
-					//System.out.println("lpx: " + leftPad.getX() + ", bx: " + x);
-					//System.out.println("lpy: " + (leftPad.getY()+100) + ", by: " + y);
-					if(y <= leftPad.getY()+102) return true;
-				}
-				//if rightpad
-				if(x >= rightPad.getX() && x <= rightPad.getX()+20){
-					if(y <= rightPad.getY()+102) return true;
-				}
-			}
-		}
-		
-		return false;
-	}
 	
 	private boolean collisionWall(){
-		if(x <= 0) {
-			Clong.currentState = states.get(2);
-			lose.play();
-		}
-		if(x+width >= screenWidth){
-			Clong.currentState = states.get(3);
-			win.play();
+		if(realBall){
+			if(x <= 0) {
+				Clong.currentState = states.get(2);
+				lose.play();
+			}
+			if(x+width >= screenWidth){
+				Clong.currentState = states.get(3);
+				win.play();
+			}			
 		}
 		
 		return false;
@@ -175,11 +248,11 @@ public class Ball {
 	}
 
 	public int getY() {
-		return y;
+		return futureY;
 	}
 
 	public int getX(){
-		return x;
+		return futureX;
 	}
 
 }

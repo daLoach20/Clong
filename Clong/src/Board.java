@@ -21,7 +21,7 @@ public class Board extends State{
 		this.km = km;
 		this.leftPad = new LeftPaddle(width * scale, height * scale, km);
 		this.rightPad = new RightPaddle(width * scale, height * scale, this, km);
-		this.ball = new Ball(width * scale, height * scale, leftPad, rightPad, states, km);
+		this.ball = new Ball(width * scale, height * scale, leftPad, rightPad, states, km, true);
 	}
 	
 	public void tick(){
