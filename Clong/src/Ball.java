@@ -21,7 +21,6 @@ public class Ball {
 	
 	//test code
 	public int collisions = 0;
-	private int first = 0;
 	
 	public Ball(int width, int height, LeftPaddle leftPad, RightPaddle rightPad, ArrayList<State> states, KeyManager km, boolean realBall){
 		//sets original position of ball, and original direction (this should be randomized)
@@ -142,7 +141,6 @@ public class Ball {
 		futureBall.yDir = yDir;
 		
 		futureBall.speed = 1;
-		first = 0;
 		while(futureBall.x <= rightPad.getX()){
 			futureX = futureBall.x;
 			futureY = futureBall.y + rand.nextInt(50) - rand.nextInt(50);
@@ -232,10 +230,6 @@ public class Ball {
 		g.drawRect(x, y, width, height);
 		g.fillRect(x, y, width, height);
 		g.setColor(Color.RED);
-		String msg = "X: " + x + ", Y: " + y;
-		String msg2 = "PX: " + leftPad.getX() + ", PY: " + (leftPad.getY()+102);
-		//g.drawString(msg, 20, 20);
-		//g.drawString(msg2, 20, 30);
 	}
 
 	public int getY() {

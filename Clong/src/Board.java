@@ -10,15 +10,12 @@ public class Board extends State{
 	private LeftPaddle leftPad;
 	private RightPaddle rightPad;
 	public Ball ball;
-	private KeyManager km;
-	private Sound s;
 	
 	public Board(int boardWidth, int boardHeight, int scale, ArrayList<State> states, KeyManager km){
 		super(states);
 		this.scale = scale;
 		this.width = boardWidth;
 		this.height = boardHeight;
-		this.km = km;
 		this.leftPad = new LeftPaddle(width * scale, height * scale, km);
 		this.rightPad = new RightPaddle(width * scale, height * scale, this, km);
 		this.ball = new Ball(width * scale, height * scale, leftPad, rightPad, states, km, true);

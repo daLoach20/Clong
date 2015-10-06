@@ -1,13 +1,11 @@
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.Random;
 //TODO AI for paddle
 public class RightPaddle {
 	
 	private int x, y, center;
 	private int height;
 	private int ticks;
-	private final int randomFactor = 1;
 	private Board board;
 	private boolean debug = false;
 	private KeyManager km;
@@ -24,7 +22,6 @@ public class RightPaddle {
 	
 	public void tick(Ball ball){
 		center = y+50;
-		Random rand = new Random();
 		if(!debug){
 			ticks++;
 			if(ticks >= 32){

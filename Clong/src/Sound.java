@@ -5,7 +5,7 @@ import java.net.URL;
 
 public class Sound {
 	
-	private String name;
+	public String name;
 	public AudioClip sound;
 	
 	
