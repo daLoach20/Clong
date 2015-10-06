@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 public class Ball {
 	
-	public int x, y, screenWidth, screenHeight, futureY, futureX;
+	public double x, y; 
+	public int screenWidth, screenHeight, futureY, futureX;
 	private final int scale = 4, width = 2*scale, height = 2*scale;
 	public int xDir, yDir, speed, defaultSpeed;
 	private int ticks;
@@ -28,13 +29,13 @@ public class Ball {
 		this.screenWidth = width;
 		this.screenHeight = height;
 		getStartPositions();
-		this.futureX = x;
-		this.futureY = y;
+		this.futureX = (int)x;
+		this.futureY = (int)y;
 		this.leftPad = leftPad;
 		this.rightPad = rightPad;
 		this.km = km;
 		this.realBall = realBall;
-		this.defaultSpeed = 20;
+		this.defaultSpeed = 1;
 		ticks = 0;
 		hit = new Sound("Collision", Sound.getUrl("coll"));
 		win = new Sound("Collision", Sound.getUrl("win"));
@@ -80,8 +81,8 @@ public class Ball {
 		
 		//y = leftPad.getY()+50;
 		if(ticks >= speed){
-			x += xDir;
-			y += yDir;
+			x += xDir*1.8;
+			y += yDir*1.8;
 			ticks = 0;
 		}
 		ticks++;
@@ -90,8 +91,8 @@ public class Ball {
 	private void resetFuture() {
 		
 		if(x > screenWidth/2 -5 && !left){
-			futureX = x;
-			futureY = y;
+			futureX = (int)x;
+			futureY = (int)y;
 		}
 		
 	}
@@ -142,8 +143,8 @@ public class Ball {
 		
 		futureBall.speed = 1;
 		while(futureBall.x <= rightPad.getX()){
-			futureX = futureBall.x;
-			futureY = futureBall.y + rand.nextInt(50) - rand.nextInt(50);
+			futureX = (int)futureBall.x;
+			futureY = (int)futureBall.y + rand.nextInt(50) - rand.nextInt(50);
 			futureBall.tick();
 		}
 	}
@@ -188,7 +189,7 @@ public class Ball {
 	private boolean collisionRight() {
 		
 		if(!left){
-			if(x+width == rightPad.getX()){
+			if(x+width >= rightPad.getX() && x <= rightPad.getX()+20){
 				if(y+height >= rightPad.getY() && y <= rightPad.getY()+100) return true;
 			}
 		}
@@ -199,7 +200,7 @@ public class Ball {
 	private boolean collisionLeft(){
 		
 		if(left){
-			if(x == leftPad.getX()+20){
+			if(x <= leftPad.getX()+20 && x >= leftPad.getX()){
 				if(y+height >= leftPad.getY() && y <= leftPad.getY()+100) return true;
 			}
 		}
@@ -227,8 +228,8 @@ public class Ball {
 	public void render(Graphics g){
 		//render the ball to the screen
 		g.setColor(Color.WHITE);
-		g.drawRect(x, y, width, height);
-		g.fillRect(x, y, width, height);
+		g.drawRect((int)x, (int)y, width, height);
+		//g.fillRect((int)x, (int)y, width, height);
 		g.setColor(Color.RED);
 	}
 

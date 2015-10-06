@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
+
 import javax.swing.JFrame;
 
 public class Clong extends Canvas implements Runnable{
@@ -66,9 +67,39 @@ public class Clong extends Canvas implements Runnable{
 	}
 
 	public void run() {
-		while(true){
+		
+		long startTime = System.nanoTime();
+		long timer = System.currentTimeMillis();
+		final double ns = 1000000000 / 60d; //
+		double delta = 0;
+		int ticks = 0;
+		int frames = 0;
+		requestFocus();
+		
+		while (true) {
+			long now = System.nanoTime();
+			delta += (now - startTime) / ns;
+			startTime = now;
+			// System.out.println(delta/60);//this will run every second
+			while (delta >= 1) {// delta runs 60 times per seconds
+				// System.out.println(tick);
+				ticks++;
+				tick();
+				delta--;
+			}
+
+			frames++;
 			render();
-			tick();
+
+			// if(tick % 60 == 0)System.out.println(tick);
+			if (System.currentTimeMillis() - timer > 1000) {
+				timer += 1000;
+				// System.out.println("FPS: " + frames + ", Ticks: " + ticks);
+				frame.setTitle("Rain" + "     " + "FPS: " + frames
+						+ ", Ticks: " + ticks);
+				frames = 0;
+				ticks = 0;
+			}
 		}
 		
 	}

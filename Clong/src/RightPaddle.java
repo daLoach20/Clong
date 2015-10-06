@@ -3,8 +3,8 @@ import java.awt.Graphics;
 //TODO AI for paddle
 public class RightPaddle {
 	
-	private int x, y, center;
-	private int height;
+	private double x, y, speed;
+	private int height, center;
 	private int ticks;
 	private Board board;
 	private boolean debug = false;
@@ -15,21 +15,22 @@ public class RightPaddle {
 		this.board = board;
 		this.x = width - 40 - 20;
 		this.y = height / 2 - 50;
-		this.center = y+50;
+		this.center = (int)y+50;
 		this.km = km;
+		this.speed = 1.08;
 		this.ticks = 0;
 	}
 	
 	public void tick(Ball ball){
-		center = y+50;
+		center = (int)y+50;
 		if(!debug){
 			ticks++;
-			if(ticks >= 32){
+			if(ticks >= 1){
 				if(ball.getY() < center){
-					if(canMoveUp()) y--;
+					if(canMoveUp()) y -= speed;
 				}
 				if(ball.getY() > center){
-					if(canMoveDown()) y++;
+					if(canMoveDown()) y += speed;
 				}
 				ticks = 0;
 			}
@@ -62,20 +63,19 @@ public class RightPaddle {
 	}
 	
 	public void render(Graphics g){
-		g.drawRect(x, y, 20, 100);
+		g.drawRect((int)x, (int)y, 20, 100);
 		g.setColor(Color.RED);
 		if(board.ball != null && debug){
-			System.out.println("Not Null");
-			g.drawLine(board.ball.getX(), board.ball.getY(), x, center);
+			g.drawLine(board.ball.getX(), board.ball.getY(), (int)x, center);
 		}
 	}
 
 	public int getX() {
-		return x;
+		return (int)x;
 	}
 	
 	public int getY(){
-		return y;
+		return (int)y;
 	}
 
 }
